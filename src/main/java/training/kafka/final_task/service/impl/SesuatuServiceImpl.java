@@ -42,7 +42,8 @@ public class SesuatuServiceImpl implements SesuatuService {
             case Operation.ADD:
                 return data.getNumbers().stream().reduce(0d, Double::sum);
             case Operation.SUBTRACT:
-                return data.getNumbers().stream().reduce(0d, (t, u) -> t - u);
+                return data.getNumbers().subList(1, data.getNumbers().size()).stream()
+                        .reduce(data.getNumbers().getFirst(), (t, u) -> t - u);
             case Operation.MULTIPLY:
                 return data.getNumbers().stream().reduce(1d, (t, u) -> t * u);
             case Operation.DIVIDE:
