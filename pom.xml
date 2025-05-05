@@ -7,13 +7,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
-	<groupId>com.activity</groupId>
-	<artifactId>kafka-schema-registry</artifactId>
+	<groupId>training.kafka</groupId>
+	<artifactId>final_task</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>kafka-schema-registry</name>
-	<description>Demo project for Spring Boot</description>
+	<name>final_task</name>
+	<description>kafka</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
@@ -86,11 +86,6 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
