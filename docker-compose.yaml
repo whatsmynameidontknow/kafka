@@ -88,8 +88,8 @@ services:
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=aku
-      - POSTGRES_USER=aku123
+      - POSTGRES_USER=aku
+      - POSTGRES_PASSWORD=aku123
       - POSTGRES_DB=sesuatu
     networks:
       - app-network
@@ -100,8 +100,8 @@ services:
       - "8181:8181"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sesuatu
-      - SPRING_DATASOURCE_USERNAME=aku123
-      - SPRING_DATASOURCE_PASSWORD=aku
+      - SPRING_DATASOURCE_USERNAME=aku
+      - SPRING_DATASOURCE_PASSWORD=aku123
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SCHEMA_REGISTRY_URL=http://schema-registry:8081
       - SERVER_PORT=8181
