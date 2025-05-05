@@ -70,16 +70,9 @@
                                         <th scope="col">Numbers</th>
                                         <th scope="col">Operation</th>
                                         <th scope="col">Result</th>
-                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="result, iterStat : ${results}">
-                                        <td th:text="${iterStat.count}"></td>
-                                        <td th:text="${result.numbers}"></td>
-                                        <td th:text="${result.operation}"></td>
-                                        <td th:text="${result.result}"></td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -123,6 +116,12 @@
         function updateTable(results) {
             tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
+            if (!results || results.length === 0) {
+                const row = document.createElement('tr')
+                row.innerHTML = '<td colspan="4" align="center"><b>no data available</b></td>'
+                tbody.appendChild(row);
+                return;
+            }
 
             results.forEach((result, index) => {
                 const row = document.createElement('tr');
@@ -137,7 +136,6 @@
                     <td>${result.numbers}</td>
                     <td>${result.operation}</td>
                     <td>${result.result}</td>
-                    ${index === results.length - 1 ? '<td><span class="badge bg-success">New</span></td>' : '<td></td>'}
                 `;
                 tbody.appendChild(row);
             });
