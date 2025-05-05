@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesuatu</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .delete-btn {
+            width: 20%;
+            height: 38px;
+            font-size: 1.2rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .animate__animated.animate__fadeIn {
+            --animate-duration: 2s;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">Calculator</h1>
+                        <form id="calculatorForm" onsubmit="handleSubmit(event)">
+                            <div id="numberInputs" class="mb-3">
+                                <div class="input-group mb-2">
+                                    <input type="number" step="any" class="form-control" placeholder="Enter a number"
+                                        required>
+                                    <button type="button" class="btn btn-danger delete-btn">×</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary w-100 mb-3" onclick="addNumberInput()">+ Add
+                                Number</button>
+
+                            <div class="mb-3">
+                                <label for="operation" class="form-label">Operation:</label>
+                                <select class="form-select" name="operation" id="operation" required>
+                                    <option value="ADD">Add</option>
+                                    <option value="SUBTRACT">Subtract</option>
+                                    <option value="MULTIPLY">Multiply</option>
+                                    <option value="DIVIDE">Divide</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100">Calculate</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">Calculation Results</h1>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Numbers</th>
+                                        <th scope="col">Operation</th>
+                                        <th scope="col">Result</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="result, iterStat : ${results}">
+                                        <td th:text="${iterStat.count}"></td>
+                                        <td th:text="${result.numbers}"></td>
+                                        <td th:text="${result.operation}"></td>
+                                        <td th:text="${result.result}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let stompClient = new StompJs.Client({
+            brokerURL: `ws://${window.location.host}/ws`
+        });
+
+        stompClient.onConnect = (frame) => {
+            console.log("Connected: " + frame);
+            stompClient.subscribe("/topic/results", (results) => {
+                updateTable(JSON.parse(results.body))
+            })
+            stompClient.publish({
+                destination: "/connect"
+            })
+        }
+
+        stompClient.onWebSocketError = (error) => {
+            console.log("Error on websocket: " + error)
+            setTimeout(connect, 5000)
+        }
+
+        stompClient.onStompError = (frame) => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+        }
+        function connect() {
+            stompClient.activate();
+        }
+
+        let tbody = null;
+        function updateTable(results) {
+            tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const row = document.createElement('tr');
+
+                if (index === results.length - 1) {
+                    row.className = 'table-warning animate__animated animate__fadeIn';
+                    row.setAttribute('title', 'Latest calculation');
+                }
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${result.numbers}</td>
+                    <td>${result.operation}</td>
+                    <td>${result.result}</td>
+                    ${index === results.length - 1 ? '<td><span class="badge bg-success">New</span></td>' : '<td></td>'}
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function addNumberInput() {
+            const container = document.getElementById('numberInputs');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group mb-2';
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = 'any';
+            input.className = 'form-control';
+            input.placeholder = 'Enter a number';
+            input.required = true;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn btn-danger delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = function () {
+                inputGroup.remove();
+                updateDeleteButtons();
+            };
+
+            inputGroup.appendChild(input);
+            inputGroup.appendChild(deleteBtn);
+            container.appendChild(inputGroup);
+
+            updateDeleteButtons();
+        }
+
+        function updateDeleteButtons() {
+            const inputs = document.querySelectorAll('#numberInputs .input-group');
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+
+            deleteButtons.forEach(btn => {
+                btn.style.display = inputs.length === 1 ? 'none' : 'flex';
+            });
+        }
+
+        document.querySelector('.delete-btn').onclick = function () {
+            if (document.querySelectorAll('#numberInputs .input-group').length > 1) {
+                this.closest('.input-group').remove();
+                updateDeleteButtons();
+            }
+        };
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            const numbers = Array.from(document.querySelectorAll('#numberInputs input'))
+                .map(input => parseFloat(input.value));
+
+            const operation = document.getElementById('operation').value.toUpperCase();
+
+            const data = {
+                numbers: numbers,
+                operation: operation
+            };
+
+            fetch('/api/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('calculatorForm').reset();
+                        const container = document.querySelector("#numberInputs");
+                        container.innerHTML = "";
+                        addNumberInput();
+                        setTimeout(() => {
+                            const lastRow = tbody.lastElementChild;
+                            lastRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        }, 500)
+                    } else {
+                        window.alert("Calculation failed!");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.alert("Error occurred while calculating!");
+                });
+        }
+
+        connect();
+        updateDeleteButtons();
+    </script>
+</body>
+
+</html>

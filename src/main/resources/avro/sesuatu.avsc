@@ -1,0 +1,27 @@
+{
+    "namespace": "training.kafka.final_task.avro",
+    "type": "record",
+    "name": "Sesuatu",
+    "fields": [
+        {
+            "name": "numbers",
+            "type": {
+                "type": "array",
+                "items": "double"
+            }
+        },
+        {
+            "name": "operation",
+            "type": {
+                "type": "enum",
+                "name": "Operation",
+                "symbols": [
+                    "ADD",
+                    "SUBTRACT",
+                    "DIVIDE",
+                    "MULTIPLY"
+                ]
+            }
+        }
+    ]
+}
