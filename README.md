@@ -24,3 +24,4 @@ atau kalo pake http client (postman, bruno, curl, dll) request body-nya:
 }
 ```
 terus send ke POST /api/send
+yg buat list ada di /api/list
