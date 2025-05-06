@@ -53,8 +53,9 @@ public class SesuatuDto {
                 return "DIVIDE";
             case Operation.MULTIPLY:
                 return "MULTIPLY";
+            default:
+                throw new IllegalArgumentException("unknown operation!");
         }
-        return "";
     }
 
     public static Operation fromOperationString(String operation) {
@@ -68,7 +69,7 @@ public class SesuatuDto {
             case "multiply":
                 return Operation.MULTIPLY;
             default:
-                return null;
+                throw new IllegalArgumentException("unknown operation: " + operation.toUpperCase());
         }
     }
 }
