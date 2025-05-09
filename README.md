@@ -30,8 +30,8 @@ yg buat list ada di /api/list
 
 1. client connect ke websocket /ws
 2. client send data ke /api/send
-3. [producer 1](/src/main/java/training/kafka/final_task/kafka/producer/SesuatuProducer.java:L21#L21) dapet data dari client, kirim ke topic `sesuatu`
-4. [consumer 1](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java) baca dari topik `sesuatu`, hitung hasil dan simpan ke DB
-5. [producer 2](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java) dapet info kalo ada data baru, kirim ke topic `results`
-6. [consumer 2](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java) baca dari topic `results`, kirim hasil terbaru ke client pake websocket
+3. [producer 1](/src/main/java/training/kafka/final_task/kafka/producer/SesuatuProducer.java#L21) dapet data dari client, kirim ke topic `sesuatu`
+4. [consumer 1](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java#L30) baca dari topik `sesuatu`, hitung hasil dan simpan ke DB
+5. [producer 2](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java#L43) dapet info kalo ada data baru, kirim ke topic `results`
+6. [consumer 2](/src/main/java/training/kafka/final_task/kafka/consumer/SesuatuConsumer.java#L51) baca dari topic `results`, kirim hasil terbaru ke client pake websocket
 7. data di client updated ✅
