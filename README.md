@@ -25,3 +25,13 @@ atau kalo pake http client (postman, bruno, curl, dll) request body-nya:
 ```
 terus send ke POST /api/send
 yg buat list ada di /api/list
+
+# Alur kerja
+
+1. client connect ke websocket /ws
+2. client send data ke /api/send
+3. producer 1 dapet data dari client, kirim ke topic `sesuatu`
+4. consumer 1 baca dari topik `sesuatu`, hitung hasil dan simpan ke DB
+5. producer 2 dapet info kalo ada data baru, kirim ke topic `results`
+6. consumer 2 baca dari topic `results`, kirim hasil terbaru ke client pake websocket
+7. data di client updated ✅
